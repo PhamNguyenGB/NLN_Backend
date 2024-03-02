@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     pay: DataTypes.INTEGER,
   }, {
     sequelize,
+    freezeTableName: true,
     modelName: 'Order',
   });
   return Order;

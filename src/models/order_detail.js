@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     quantity: DataTypes.INTEGER,
   }, {
     sequelize,
+    freezeTableName: true,
     modelName: 'Order_Detail',
   });
   return Order_Detail;

@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
   }, {
     sequelize,
+    freezeTableName: true,
     modelName: 'Product',
   });
   return Product;
