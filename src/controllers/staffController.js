@@ -67,45 +67,53 @@ const login = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-    const refreshToken = req.cookies.refresh_token;
-    if (!refreshToken) {
-        return res.status(401).json({
-            Mess: 'Bạn chưa đăng nhập',
-            ErrC: 1,
+    try {
+        const refreshToken = req.cookies.refresh_token;
+        if (!refreshToken) {
+            return res.status(401).json({
+                Mess: 'Bạn chưa đăng nhập',
+                ErrC: 1,
+            });
+        }
+        if (!refreshTokensArr.includes(refreshToken)) {
+            return res.status(403).json({
+                Mess: 'Lỗi đăng nhập',
+            })
+        }
+        jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH, (err, user) => {
+            if (err) {
+                console.log(err);
+            }
+            refreshTokensArr = refreshTokensArr.filter(
+                (token) => token !== refreshToken
+            );
+            // create new access token
+            let payload = {
+                id: user.id,
+                staffname: user.staffname,
+                address: user.address,
+                phone: user.phone,
+                role: user.role,
+            }
+            const newAccessToken = staffService.createJWT(payload);
+            const newFrefreshToken = staffService.refreshToken(payload);
+            refreshTokensArr.push(newFrefreshToken);
+            res.cookie("refresh_token", newFrefreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "strict",
+            });
+            return res.status(200).json({
+                access_token: newAccessToken,
+            });
         });
-    }
-    if (!refreshTokensArr.includes(refreshToken)) {
-        return res.status(403).json({
-            Mess: 'Lỗi đăng nhập',
+    } catch (error) {
+        console.log(error);
+        res.status(200).json({
+            Mess: 'Error from refresh',
+            ErrC: -1,
         })
     }
-    jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH, (err, user) => {
-        if (err) {
-            console.log(err);
-        }
-        refreshTokensArr = refreshTokensArr.filter(
-            (token) => token !== refreshToken
-        );
-        // create new access token
-        let payload = {
-            id: user.id,
-            staffname: user.staffname,
-            address: user.address,
-            phone: user.phone,
-            role: user.role,
-        }
-        const newAccessToken = staffService.createJWT(payload);
-        const newFrefreshToken = staffService.refreshToken(payload);
-        refreshTokensArr.push(newFrefreshToken);
-        res.cookie("refresh_token", newFrefreshToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "strict",
-        });
-        return res.status(200).json({
-            access_token: newAccessToken,
-        });
-    });
 };
 
 const logout = async (req, res) => {

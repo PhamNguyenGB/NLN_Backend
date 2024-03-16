@@ -17,6 +17,7 @@ configCors(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(express.static('src/assets'));
 app.use(cookieParser());
 
 StaffRoute(app);
