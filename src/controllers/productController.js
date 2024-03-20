@@ -19,6 +19,7 @@ const findAllProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
+        console.log("check file", req.file);
         let data = await ProductService.addProduct(req.body, req.file);
         return res.status(200).json({
             Mess: data.Mess,
@@ -36,7 +37,8 @@ const createProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        let idProduct = req.body.id;
+        console.log("check req", req.params);
+        let idProduct = req.params.idProduct;
         await ProductService.deleteFile(idProduct);
         let data = await ProductService.deleteProductService(idProduct);
         return res.status(200).json({
