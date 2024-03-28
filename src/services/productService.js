@@ -154,10 +154,82 @@ const updateProductService = async (idProduct, dataProduct, newFile) => {
     }
 };
 
+const getNewProducts = async () => {
+    try {
+        const products = await db.Product.findAll({
+            order: [['id', 'DESC']],
+            limit: 3
+        });
+        return {
+            Mess: 'Get new products successfully',
+            ErrC: 0,
+            Data: products
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            Mess: 'error get new product',
+            ErrC: -1,
+            Data: '',
+        };
+    }
+};
+
+const getTypeProductService = async (type) => {
+    try {
+        const products = await db.Product.findAll({
+            where: { type: type },
+        });
+        if (products) {
+            return {
+                Mess: 'Get type product successfully',
+                ErrC: 0,
+                Data: products,
+            }
+        } else {
+            return {
+                Mess: 'Product not found',
+                ErrC: 1,
+                Data: '',
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            Mess: 'error get type product',
+            ErrC: -1,
+            Data: '',
+        }
+    }
+};
+
+const getProductByIDService = async (idProduct) => {
+    try {
+        const product = await db.Product.findOne({
+            where: { id: idProduct },
+        })
+        return {
+            Mess: 'Get product successfully',
+            ErrC: 0,
+            Data: product,
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            Mess: 'Product not found',
+            ErrC: -1,
+            Data: '',
+        }
+    }
+};
+
 module.exports = {
     getAllProducts,
     addProduct,
     deleteProductService,
     deleteFile,
     updateProductService,
+    getNewProducts,
+    getTypeProductService,
+    getProductByIDService,
 }

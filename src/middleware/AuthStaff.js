@@ -30,7 +30,21 @@ const checkVerifyTokenAdmin = (req, res, next) => {
     });
 };
 
+const checkVerifyTokenUser = (req, res, next) => {
+    verifyToken(req, res, () => {
+        if (req.user.role == 'user') {
+            next();
+        } else {
+            return res.status(403).json({
+                Mess: 'Tài khoản hoặc mật khẩu không chính xác!!',
+                ErrC: 1,
+            })
+        }
+    })
+};
+
 module.exports = {
     verifyToken,
     checkVerifyTokenAdmin,
+    checkVerifyTokenUser,
 };

@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 import db from '../models/index';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -10,18 +10,18 @@ const funHashPassWord = (password) => {
     return hash
 }
 
-const checkStaffName = async (staffName) => {
-    let staff = await db.Staff.findOne({
-        where: { staffname: staffName },
+const checkUserName = async (username) => {
+    let user = await db.User.findOne({
+        where: { username: username },
     })
-    if (staff) {
+    if (user) {
         return true;
     }
     return false;
 }
 
 const checkYourPhone = async (phone) => {
-    let yourPhone = await db.Staff.findOne({
+    let yourPhone = await db.User.findOne({
         where: { phone: phone },
     })
     if (yourPhone) {
@@ -30,9 +30,9 @@ const checkYourPhone = async (phone) => {
     return false;
 }
 
-const reristerStaff = async (staffData) => {
+const registerUser = async (user) => {
     try {
-        let checkName = await checkStaffName(staffData.staffname);
+        let checkName = await checkUserName(user.username);
         if (checkName === true) {
             return {
                 Mess: 'Tên tài khoản đã tồn tại',
@@ -40,7 +40,7 @@ const reristerStaff = async (staffData) => {
                 Data: '',
             }
         }
-        let checkPhone = await checkYourPhone(staffData.phone);
+        let checkPhone = await checkYourPhone(user.phone);
         if (checkPhone === true) {
             return {
                 Mess: 'Số điện thoại đã được sử dụng',
@@ -48,12 +48,12 @@ const reristerStaff = async (staffData) => {
                 Data: ''
             }
         }
-        let hashPass = await funHashPassWord(staffData.password);
-        await db.Staff.create({
-            staffname: staffData.staffname,
+        let hashPass = await funHashPassWord(user.password);
+        await db.User.create({
+            username: user.username,
             password: hashPass,
-            address: staffData.address,
-            phone: staffData.phone,
+            address: user.address,
+            phone: user.phone,
         })
         return {
             Mess: 'Tạo tài khoản thành công',
@@ -73,20 +73,21 @@ const checkPassword = (hashPass, password) => {
     return bcrypt.compareSync(password, hashPass);
 };
 
-const loginStaff = async (staffname, password) => {
+
+const loginUser = async (username, password) => {
     try {
-        let staff = await db.Staff.findOne({
-            where: { staffname: staffname }
+        let user = await db.User.findOne({
+            where: { username: username }
         });
-        if (staff) {
-            let isCorrectPassword = await checkPassword(staff.password, password);
+        if (user) {
+            let isCorrectPassword = await checkPassword(user.password, password);
             if (isCorrectPassword === true) {
                 let payload = {
-                    id: staff.dataValues.id,
-                    staffname: staff.dataValues.staffname,
-                    address: staff.dataValues.address,
-                    phone: staff.dataValues.phone,
-                    role: 'admin',
+                    id: user.dataValues.id,
+                    username: user.dataValues.username,
+                    address: user.dataValues.address,
+                    phone: user.dataValues.phone,
+                    role: 'user',
                 }
                 let token = createJWT(payload);
                 let refresh_token = refreshToken(payload);
@@ -95,10 +96,10 @@ const loginStaff = async (staffname, password) => {
                     ErrC: 0,
                     Data: {
                         access_token: token,
-                        staffname: staff.dataValues.staffname,
-                        id: staff.dataValues.id,
-                        address: staff.dataValues.address,
-                        phone: staff.dataValues.phone,
+                        username: user.dataValues.username,
+                        id: user.dataValues.id,
+                        address: user.dataValues.address,
+                        phone: user.dataValues.phone,
                     },
                     refreshToken: refresh_token,
                 }
@@ -116,7 +117,7 @@ const loginStaff = async (staffname, password) => {
             ErrC: -1,
         }
     }
-};
+}
 
 const createJWT = (payload) => {
     let key = process.env.JWT_SECRET;
@@ -141,8 +142,8 @@ const refreshToken = (payload) => {
 };
 
 module.exports = {
-    reristerStaff,
-    loginStaff,
+    registerUser,
+    loginUser,
     createJWT,
     refreshToken,
-};
+}

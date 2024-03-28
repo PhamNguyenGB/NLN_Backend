@@ -10,6 +10,8 @@ const productRoute = (app) => {
     router.post('/create', checkVerifyTokenAdmin, upload.single('image'), ProductController.createProduct);
     router.delete('/delete/:idProduct', checkVerifyTokenAdmin, ProductController.deleteProduct);
     router.put('/update', checkVerifyTokenAdmin, upload.single('image'), ProductController.updateProduct);
+    router.get('/:type', ProductController.getTypeProducts);
+    router.get('/oneProduct/:id', ProductController.getByProductID);
 
     return app.use('/api/products', router);
 }

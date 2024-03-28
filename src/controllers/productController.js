@@ -72,9 +72,68 @@ const updateProduct = async (req, res) => {
     }
 };
 
+const fetchNewProducts = async (req, res) => {
+    try {
+        let data = await ProductService.getAllProducts();
+        return res.status(200).json({
+            Mess: data.Mess,
+            ErrC: data.ErrC,
+            Data: data.Data,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            Mess: 'error fetch new products',
+            ErrC: -1,
+        });
+    }
+};
+
+const getTypeProducts = async (req, res) => {
+    try {
+        let type = req.params.type;
+        type = type.replace(/-/g, ' ');
+        let data = await ProductService.getTypeProductService(type);
+        return res.status(200).json({
+            Mess: data.Mess,
+            ErrC: data.ErrC,
+            Data: data.Data,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            Mess: 'error get type products',
+            ErrC: -1,
+            Data: '',
+        });
+    }
+};
+
+const getByProductID = async (req, res) => {
+    try {
+        let idProduct = req.params.id;
+        let data = await ProductService.getProductByIDService(idProduct);
+        return res.status(200).json({
+            Mess: data.Mess,
+            ErrC: data.ErrC,
+            Data: data.Data,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            Mess: 'error get products',
+            ErrC: -1,
+            Data: '',
+        });
+    }
+};
+
 module.exports = {
     findAllProducts,
     createProduct,
     deleteProduct,
     updateProduct,
+    fetchNewProducts,
+    getTypeProducts,
+    getByProductID,
 }

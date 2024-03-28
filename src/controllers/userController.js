@@ -1,12 +1,12 @@
 require("dotenv").config();
-import staffService from '../services/staffService';
+import UserService from '../services/userService';
 import jwt from 'jsonwebtoken';
 
 let refreshTokensArr = [];
 
-const reristerStaff = async (req, res) => {
+const rerister = async (req, res) => {
     try {
-        if (!req.body.staffname && !req.body.password && !req.body.address && !req.body.phone) {
+        if (!req.body.username && !req.body.password && !req.body.address && !req.body.phone) {
             return res.status(200).json({
                 Mess: 'Bạn chưa điền đủ thông tin!',
                 Data: '',
@@ -25,7 +25,7 @@ const reristerStaff = async (req, res) => {
             });
         }
 
-        let data = await staffService.reristerStaff(req.body);
+        let data = await UserService.registerUser(req.body);
         return res.status(200).json({
             Mess: data.Mess,
             ErrC: data.ErrC
@@ -35,16 +35,16 @@ const reristerStaff = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            Mess: 'error from server registerStaff',
+            Mess: 'error from server registerUser',
             ErrC: -1,
             Data: '',
         })
     }
 };
 
-const login = async (req, res) => {
+const loginUser = async (req, res) => {
     try {
-        let data = await staffService.loginStaff(req.body.staffname, req.body.password);
+        let data = await UserService.loginUser(req.body.username, req.body.password);
         refreshTokensArr.push(data.refreshToken);
         res.cookie("refresh_token", data.refreshToken, {
             httpOnly: true,
@@ -90,13 +90,13 @@ const refreshToken = async (req, res) => {
             // create new access token
             let payload = {
                 id: user.id,
-                staffname: user.staffname,
+                username: user.username,
                 address: user.address,
                 phone: user.phone,
                 role: user.role,
             }
-            const newAccessToken = staffService.createJWT(payload);
-            const newFrefreshToken = staffService.refreshToken(payload);
+            const newAccessToken = UserService.createJWT(payload);
+            const newFrefreshToken = UserService.refreshToken(payload);
             refreshTokensArr.push(newFrefreshToken);
             res.cookie("refresh_token", newFrefreshToken, {
                 httpOnly: true,
@@ -135,15 +135,15 @@ const logout = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(200).json({
-            Mess: 'Error from logout staff',
+            Mess: 'Error from logout user',
             ErrC: -1,
         })
     }
 };
 
 module.exports = {
-    reristerStaff,
-    login,
+    rerister,
+    loginUser,
     refreshToken,
     logout,
 }
