@@ -12,6 +12,7 @@ const productRoute = (app) => {
     router.put('/update', checkVerifyTokenAdmin, upload.single('image'), ProductController.updateProduct);
     router.get('/:type', ProductController.getTypeProducts);
     router.get('/oneProduct/:id', ProductController.getByProductID);
+    router.get('/similar/:type/:id', ProductController.getSimilarProduct);
 
     return app.use('/api/products', router);
 }

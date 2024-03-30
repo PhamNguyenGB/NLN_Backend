@@ -1,6 +1,7 @@
 import db from '../models/index';
 import path from 'path';
 import fs from 'fs';
+import { Op } from 'sequelize';
 
 const getAllProducts = async () => {
     try {
@@ -223,6 +224,32 @@ const getProductByIDService = async (idProduct) => {
     }
 };
 
+const getSimilarProductService = async (type, idOldProduct) => {
+    try {
+        const data = await db.Product.findAll({
+            where: {
+                id: {
+                    [Op.ne]: idOldProduct
+                },
+                type: type,
+            },
+            limit: 4,
+        })
+        return {
+            Mess: 'find similar product successfully',
+            ErrC: 0,
+            Data: data,
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            Mess: 'Similar product not found',
+            ErrC: 1,
+            Data: '',
+        }
+    }
+};
+
 module.exports = {
     getAllProducts,
     addProduct,
@@ -232,4 +259,5 @@ module.exports = {
     getNewProducts,
     getTypeProductService,
     getProductByIDService,
+    getSimilarProductService
 }

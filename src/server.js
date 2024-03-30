@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import StaffRoute from './routes/staffRoute';
 import ProductRoute from './routes/productRoute';
 import UserRoute from './routes/userRoute';
+import OrderRoute from './routes/orderRoute';
+import OrderDetailRoute from './routes/orderDetailRoute';
 
 const app = express();
 
@@ -24,6 +26,8 @@ app.use(cookieParser());
 UserRoute(app);
 StaffRoute(app);
 ProductRoute(app);
+OrderRoute(app);
+OrderDetailRoute(app);
 
 app.use((req, res) => {
     return res.send("404 not found");

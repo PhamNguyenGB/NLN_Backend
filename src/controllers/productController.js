@@ -128,6 +128,27 @@ const getByProductID = async (req, res) => {
     }
 };
 
+const getSimilarProduct = async (req, res) => {
+    try {
+        let type = req.params.type;
+        type = type.replace(/-/g, ' ');
+        let idProduct = req.params.id;
+        let data = await ProductService.getSimilarProductService(type, idProduct);
+        return res.status(200).json({
+            Mess: data.Mess,
+            ErrC: data.ErrC,
+            Data: data.Data,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            Mess: 'error getSimilar products',
+            ErrC: -1,
+            Data: '',
+        });
+    }
+};
+
 module.exports = {
     findAllProducts,
     createProduct,
@@ -136,4 +157,5 @@ module.exports = {
     fetchNewProducts,
     getTypeProducts,
     getByProductID,
+    getSimilarProduct,
 }
