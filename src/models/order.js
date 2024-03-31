@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     phone: DataTypes.STRING,
     totalCost: DataTypes.INTEGER,
     pay: DataTypes.INTEGER,
+    status: DataTypes.STRING,
   }, {
     sequelize,
     freezeTableName: true,

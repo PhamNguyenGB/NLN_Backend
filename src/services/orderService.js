@@ -8,6 +8,7 @@ const addOrderService = async (data) => {
             phone: data.phone,
             totalCost: data.totalAmout,
             pay: data.shipping,
+            status: 'Unconfirmed',
         })
         return {
             Mess: 'Đặt hàng thành công',
@@ -24,6 +25,26 @@ const addOrderService = async (data) => {
     }
 }
 
+const getAllOrdersService = async () => {
+    try {
+        let data = await db.Order.findAll({
+            include: { model: db.User, attributes: ['username'] }
+        });
+        return {
+            Mess: 'Get all orders successfully',
+            ErrC: 0,
+            Data: data,
+        }
+    } catch (error) {
+        return {
+            Mess: 'Get all orders failed',
+            ErrC: 1,
+            Data: '',
+        }
+    }
+}
+
 module.exports = {
-    addOrderService
+    addOrderService,
+    getAllOrdersService,
 }

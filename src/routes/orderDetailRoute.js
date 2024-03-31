@@ -5,8 +5,9 @@ const router = express.Router();
 
 const orderDetailRoute = (app) => {
     router.post('/addOrderDetail', OrderDetailController.addOrderDetail);
+    router.get('/getOrderDetail/:id', OrderDetailController.getOrderDetail);
 
-    return app.use('/api/orderDetails', router);
+    return app.use('/api/Details', router);
 };
 
 export default orderDetailRoute;

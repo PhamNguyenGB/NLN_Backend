@@ -41,6 +41,28 @@ const addOrderDetailService = async (data) => {
     }
 };
 
+const getOrderDetailService = async (idOrder) => {
+    try {
+        const data = await db.Order_Detail.findAll({
+            where: { orderId: idOrder },
+            include: { model: db.Product }
+        });
+        return {
+            Mess: 'Get all idOrder detail successfully',
+            ErrC: 0,
+            Data: data,
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            Mess: 'error get all idOrder detail',
+            ErrC: 1,
+            Data: '',
+        }
+    }
+};
+
 module.exports = {
     addOrderDetailService,
+    getOrderDetailService,
 }

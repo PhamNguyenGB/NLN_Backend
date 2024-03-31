@@ -18,6 +18,25 @@ const addOrderDetail = async (req, res) => {
     }
 };
 
+const getOrderDetail = async (req, res) => {
+    try {
+        let data = await OrderDetailService.getOrderDetailService(req.params.id);
+        return res.status(200).json({
+            Mess: data.Mess,
+            ErrC: data.ErrC,
+            Data: data.Data,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            Mess: 'error getting order detail',
+            ErrC: -1,
+            Data: '',
+        });
+    }
+};
+
 module.exports = {
     addOrderDetail,
+    getOrderDetail,
 };
