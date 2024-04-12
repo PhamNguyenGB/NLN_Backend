@@ -36,7 +36,18 @@ const getOrderDetail = async (req, res) => {
     }
 };
 
+const totalQuantity = async (req, res) => {
+    try {
+        let totalQuantity = await OrderDetailService.TotalQuantityService();
+        return res.status(200).json({ totalQuantity });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('error total quantity ');
+    }
+};
+
 module.exports = {
     addOrderDetail,
     getOrderDetail,
+    totalQuantity,
 };

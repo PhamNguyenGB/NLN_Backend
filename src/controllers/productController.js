@@ -19,7 +19,6 @@ const findAllProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        console.log("check file", req.file);
         let data = await ProductService.addProduct(req.body, req.file);
         return res.status(200).json({
             Mess: data.Mess,
@@ -37,7 +36,6 @@ const createProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        console.log("check req", req.params);
         let idProduct = req.params.idProduct;
         await ProductService.deleteFile(idProduct);
         let data = await ProductService.deleteProductService(idProduct);
@@ -149,6 +147,45 @@ const getSimilarProduct = async (req, res) => {
     }
 };
 
+const filterProductsPrice = async (req, res) => {
+    try {
+        let type = req.params.type;
+        type = type.replace(/-/g, ' ');
+        let price = req.params.price;
+        let data = await ProductService.filterProductsPriceService(type, price);
+        return res.status(200).json({
+            Mess: data.Mess,
+            ErrC: data.ErrC,
+            Data: data.Data,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            Mess: 'error filter products',
+            ErrC: -1,
+            Data: '',
+        });
+    }
+}
+
+const searchProduct = async (req, res) => {
+    try {
+        const data = await ProductService.handleSearchProduct(req.params.name);
+        return res.status(200).json({
+            Mess: data.Mess,
+            ErrC: data.ErrC,
+            Data: data.Data,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            Mess: 'error searching products',
+            ErrC: -1,
+            Data: '',
+        });
+    }
+}
+
 module.exports = {
     findAllProducts,
     createProduct,
@@ -158,4 +195,6 @@ module.exports = {
     getTypeProducts,
     getByProductID,
     getSimilarProduct,
+    filterProductsPrice,
+    searchProduct,
 }

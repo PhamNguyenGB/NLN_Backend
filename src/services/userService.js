@@ -141,9 +141,35 @@ const refreshToken = (payload) => {
     return refreshToken;
 };
 
+const statisticUsers = async () => {
+    try {
+        let users = await db.User.findAll({});
+        let usersCount = 0;
+        users.map((user, index) => {
+            usersCount += 1;
+        })
+        return usersCount;
+    } catch (error) {
+        console.log(error);
+        return;
+    }
+};
+
+const getAllUsersService = async () => {
+    try {
+        let users = await db.User.findAll({});
+        return users;
+    } catch (error) {
+        console.log(error);
+        return;
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
     createJWT,
     refreshToken,
+    statisticUsers,
+    getAllUsersService,
 }

@@ -250,6 +250,74 @@ const getSimilarProductService = async (type, idOldProduct) => {
     }
 };
 
+const filterProductsPriceService = async (type, price) => {
+    try {
+        let products = [];
+        if (type === 'All') {
+            products = await db.Product.findAll({});
+        } else {
+            products = await db.Product.findAll({
+                where: { type: type }
+            });
+        }
+        console.log("check products", products);
+        if (products) {
+            let data = [];
+            if (price === '500000') {
+                data = products.filter((item) => item.price < price);
+            } else if (price === '1000000') {
+                data = products.filter((item) => item.price >= 500000 && item.price < price);
+            } else if (price === '2000000') {
+                data = products.filter((item) => item.price >= 1000000 && item.price < price);
+            } else if (price === '3000000') {
+                data = products.filter((item) => item.price >= 2000000 && item.price < price);
+            } else if (price === '5000000') {
+                data = products.filter((item) => item.price >= 3000000 && item.price < price);
+            } else {
+                data = products.filter((item) => item.price <= price);
+            }
+            return {
+                Mess: 'find products filter price successfully',
+                ErrC: 0,
+                Data: data,
+            }
+        }
+        return {
+            Mess: 'find products filter price not found',
+            ErrC: 0,
+            Data: [],
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            Mess: 'find products filter price  not found',
+            ErrC: 1,
+            Data: '',
+        }
+    }
+};
+
+const handleSearchProduct = async (name) => {
+    try {
+        const products = await db.Product.findAll({});
+        const data = await products.filter((item) =>
+            item.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())
+        )
+        return {
+            Mess: 'Search for products successfully',
+            ErrC: 0,
+            Data: data,
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            Mess: 'Search for products failed',
+            ErrC: 1,
+            Data: '',
+        }
+    }
+};
+
 module.exports = {
     getAllProducts,
     addProduct,
@@ -259,5 +327,7 @@ module.exports = {
     getNewProducts,
     getTypeProductService,
     getProductByIDService,
-    getSimilarProductService
+    getSimilarProductService,
+    filterProductsPriceService,
+    handleSearchProduct,
 }

@@ -62,7 +62,22 @@ const getOrderDetailService = async (idOrder) => {
     }
 };
 
+const TotalQuantityService = async () => {
+    try {
+        const data = await db.Order_Detail.findAll({});
+        let totalQuantity = 0;
+        data.map((item) => {
+            totalQuantity += item.quantity;
+        });
+        return totalQuantity;
+    } catch (error) {
+        console.log(error);
+        return 'error total quantity';
+    }
+};
+
 module.exports = {
     addOrderDetailService,
     getOrderDetailService,
+    TotalQuantityService,
 }

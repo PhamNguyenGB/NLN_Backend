@@ -13,6 +13,8 @@ const productRoute = (app) => {
     router.get('/:type', ProductController.getTypeProducts);
     router.get('/oneProduct/:id', ProductController.getByProductID);
     router.get('/similar/:type/:id', ProductController.getSimilarProduct);
+    router.get('/filter/:type/:price', ProductController.filterProductsPrice);
+    router.get('/search/:name', ProductController.searchProduct);
 
     return app.use('/api/products', router);
 }

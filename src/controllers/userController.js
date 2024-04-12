@@ -118,19 +118,13 @@ const refreshToken = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        if (req.cookies.refresh_token) {
-            res.clearCookie("refresh_token");
-            refreshTokensArr = refreshTokensArr.filter(
-                (token) => token !== req.cookies.refreshToken
-            );
-            return res.status(200).json({
-                Mess: 'Đăng xuất thành công',
-                ErrC: 0,
-            });
-        }
+        res.clearCookie("refresh_token");
+        refreshTokensArr = refreshTokensArr.filter(
+            (token) => token !== req.cookies.refreshToken
+        );
         return res.status(200).json({
-            Mess: 'Không thể đăng xuất',
-            ErrC: 1,
+            Mess: 'Đăng xuất thành công',
+            ErrC: 0,
         });
     } catch (error) {
         console.log(error);
@@ -141,9 +135,31 @@ const logout = async (req, res) => {
     }
 };
 
+const statisticUsers = async (req, res) => {
+    try {
+        const totalUsers = await UserService.statisticUsers();
+        return res.status(200).json({ totalUsers });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('error from statisticUsers');
+    }
+};
+
+const getAllUsers = async (req, res) => {
+    try {
+        const data = await UserService.getAllUsersService();
+        return res.status(200).json({ data });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json('error from getAllUsers');
+    }
+};
+
 module.exports = {
     rerister,
     loginUser,
     refreshToken,
     logout,
+    statisticUsers,
+    getAllUsers,
 }
